@@ -2,10 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 # CGI处理模块
-import cgi, cgitb
+import cgi
 import hashlib
 
-import web
 import mysql.connector
 
 db = mysql.connector.connect(

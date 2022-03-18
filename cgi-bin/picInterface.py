@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 # CGI处理模块
-import base64
 import cgi, cgitb
 
 import mysql.connector

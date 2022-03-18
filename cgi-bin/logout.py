@@ -2,10 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 # CGI处理模块
-import cgi, cgitb
 import os
 
-import mysql.connector
 import http.cookies
 
 cookie = http.cookies.SimpleCookie(os.environ.get('HTTP_COOKIE'))

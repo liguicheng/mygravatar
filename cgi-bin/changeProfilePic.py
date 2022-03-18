@@ -3,10 +3,9 @@
 
 # CGI处理模块
 import base64
-import cgi, cgitb
+import cgi
 import hashlib
 
-import web
 import mysql.connector
 
 
