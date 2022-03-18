@@ -1,0 +1,50 @@
+*{
+    margin:0;
+    padding:0;
+    text-decoration:none;
+    list-style:none;
+}
+body{
+    text-align:center;
+}
+.header{
+    display:inline-block;
+    position:absolute;
+    background-color:#315a7491;
+    right:200px;
+    top:20px;
+}
+.header:hover .downbtn{
+    display:block;
+    background-color: #f1f1f1;
+}
+.header:hover{
+    background-color: #315a7491;
+}
+.header span{
+    padding:37px;
+    line-height:61px;
+    cursor:pointer;
+    color: white;
+}
+.header .downbtn{
+    display:none;
+    position:relative;
+    background-color:#f9f9f9;
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.2);
+    min-width: 120px;
+}
+.header .downbtn li{
+    line-height:40px;
+    text-align:left;
+    /*padding-left:5px;*/
+}
+.header .downbtn a:hover{
+    text-decoration:underline;
+    color:#f00;
+}
+.header .downbtn a{
+    display:block;
+    color:black;
+    width:100%;
+}
