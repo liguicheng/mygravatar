@@ -5,9 +5,7 @@
 import base64
 import cgi
 import os
-
 import jwt
-
 import MySQL
 
 
@@ -73,8 +71,8 @@ else:
             print("Content-type:text/html")
             print()
     except:
-        # 解码出错的话就获取不了用户名（即为空字符串），这里不做操作，前端获取到的用户名是空字符串则返回登录界面
-        pass
+        print("Content-type:text/html")
+        print()
 
 
 
