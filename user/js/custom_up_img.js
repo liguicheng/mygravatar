@@ -79,8 +79,14 @@ $(function() {
         type: "post",
         data: {"email":email.toString()},
         success: function(data, textStatus){
-            //alert(data);
-            imag.src = data;
+            if (data !== "") {
+                //alert(data);
+                imag.src = data;
+            } else {
+                alert('身份校验失败，请重新登录！');
+                window.location.href = "../register";
+            }
+
         },
     });
 
