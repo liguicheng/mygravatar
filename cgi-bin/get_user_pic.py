@@ -33,7 +33,6 @@ cursor = db_conn.get_cursor()
 # 创建 FieldStorage 的实例化
 form = cgi.FieldStorage()
 
-
 email  = form.getvalue('email')
 token = ""
 token_email = ""
