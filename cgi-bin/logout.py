@@ -3,12 +3,12 @@
 
 # CGI处理模块
 import os
-
 import http.cookies
 
+
 cookie = http.cookies.SimpleCookie(os.environ.get('HTTP_COOKIE'))
-# cookie['email']['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
-cookie['email'] = "clear"
+cookie['token'] = "clear"
+cookie['token']['path'] = "/"
 
 print("Content-type:text/html")
 print(cookie)

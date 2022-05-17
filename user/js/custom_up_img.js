@@ -50,7 +50,7 @@ $(function() {
 
 
     $.ajax( {
-        url:"../cgi-bin/getUserName.py",
+        url:"../cgi-bin/get_user_name.py",
         // dataType:'json',
         dataType:"json",
         type: "post",
@@ -58,7 +58,8 @@ $(function() {
         data: {"email":email.toString()},
         success: function(data, textStatus){
             //alert(data['email']);
-            if (email == data['email']) {
+            //alert(getCookie('token'));
+            if (email === data['email'] && data['name'] !== "") {
                 document.getElementById("name").innerText=data['name'];
             } else {
                 alert('请刷新登录界面后重新登录！')
@@ -66,13 +67,14 @@ $(function() {
             }
         },
         error: function(){
-            alert(document.cookie);
+            //alert(document.cookie);
             alert('暂未登录！');
+            window.location.href = "../register";
         }
     });
 
     $.ajax( {
-        url:"../cgi-bin/getUserPic.py",
+        url:"../cgi-bin/get_user_pic.py",
         dataType:'html',
         type: "post",
         data: {"email":email.toString()},
@@ -144,7 +146,7 @@ $(function() {
     	var $modal = $('#my-modal-loading');
     	var $modal_alert = $('#my-alert');
     	var img_src=$image.attr("src");
-    	if(img_src==""){
+    	if(img_src===""){
     		set_alert_info("没有选择上传的图片");
     		$modal_alert.modal();
     		return false;
@@ -163,27 +165,42 @@ $(function() {
                 type: "POST",
                 data: {
                     "image":data.toString(),
-                    "email":email
+                    "email":email,
+                    //提交表单时要求加入token，用于后端校验，防止CSRF攻击
+                    "token":getCookie("token")
                 },
                 success: function(data, textStatus){
                     //alert(data);
+                    // 身份验证错误或者cookie失效
+                    //alert(document.cookie);
+                    if (data === "" || getCookie("token") === "") {
+                        if (getCookie("token") === "") {
+                            alert("身份过期，请重新登录!");
+                        } else {
+                            alert("身份校验失败，无法更改头像，请重新登录!");
+                        }
+                         window.location.href = "../register";
+                    } else {
+                         // imag.src = canvas.toDataURL();
+                        imag.src = data;
 
-                    // imag.src = canvas.toDataURL();
-                    imag.src = data;
+                        $modal.modal('close');
+                        set_alert_info(data.result);
+                        $modal_alert.modal();
 
-                	$modal.modal('close');
-                	set_alert_info(data.result);
-                	$modal_alert.modal();
+                        if(data.result=="ok"){
+                            // $("#up-img-touch img").attr("src", data.file);
 
-                	if(data.result=="ok"){
-                		// $("#up-img-touch img").attr("src", data.file);
-                	
-                		var img_name=data.file.split('/')[2];
-                		console.log(img_name);
-                		$("#pic").text(img_name);
-                	}
+                            var img_name=data.file.split('/')[2];
+                            console.log(img_name);
+                            $("#pic").text(img_name);
+                        }
+                    }
+
+
                 },
                 error: function(){
+                    //alert("失败啦");
                 	$modal.modal('close');
                 	set_alert_info("上传文件失败了！");
                 	$modal_alert.modal();
@@ -216,12 +233,6 @@ $(function() {
          });
 
     });
-
-
-
-
-
-
     
 });
 
@@ -236,4 +247,18 @@ $("#image").cropper('rotate', -90);
 
 function set_alert_info(content){
 	$("#alert_content").html(content);
+}
+
+// 获取指定名称的cookie
+function getCookie(name){
+    var strcookie = document.cookie;//获取cookie字符串
+    var arrcookie = strcookie.split(";");//分割
+    //遍历匹配
+    for ( var i = 0; i < arrcookie.length; i++) {
+        var arr = arrcookie[i].split("=");
+        if (arr[0] == name){
+            return arr[1];
+        }
+    }
+    return "";
 }

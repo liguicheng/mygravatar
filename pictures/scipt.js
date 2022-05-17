@@ -15,7 +15,7 @@ $(function() {
     //alert(email);
 
     $.ajax( {
-        url:"../cgi-bin/picInterface.py",
+        url:"../cgi-bin/pic_interface.py",
         dataType:'html',
         type: "post",
         data: {"email":email.toString()},

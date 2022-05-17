@@ -30,8 +30,6 @@ $(function() {
 });
 
 
-
-
 function register() {
 	var url="../cgi-bin/register.py";
 
@@ -39,31 +37,39 @@ function register() {
     var name = f.name.value;
     var email   = f.email.value;
     var password   = f.password.value;
+    //alert(fChkMail(email));
 
-	var data = "name=" + name + "&email=" + email + "&password=" + password;
+    //校验邮箱、名字、密码是否合法
+	if (fChkMail(email) && check_other_char(name) ) {
+		var data = "name=" + name + "&email=" + email + "&password=" + password;
 
-	$.ajax({
-		url: url,
-		type: "POST",//方法类型
-		dataType: "html",//预期服务器返回的数据类型
-		// data:{
-		// 	'name': name,
-		// 	'email': email,
-		// 	'password': password
-		// },
-		data: data,
-		success: function (result) {
-			if(result.trim().toLowerCase() == "false"){
-				alert("注册失败！已经存在该邮箱用户");
+		$.ajax({
+			url: url,
+			type: "POST",//方法类型
+			dataType: "html",//预期服务器返回的数据类型
+			// data:{
+			// 	'name': name,
+			// 	'email': email,
+			// 	'password': password
+			// },
+			data: data,
+			success: function (result) {
+				if(result.trim().toLowerCase() === "false"){
+					alert("注册失败！已经存在该邮箱用户!");
+				}
+				else {
+					alert("注册成功，快去登录吧！");
+				}
+			},
+			error : function() {
+				alert("异常！");
 			}
-			else {
-				alert("注册成功，快去登录吧！");
-			}
-		},
-		error : function() {
-			alert("异常！");
-		}
-	});
+		});
+	} else {
+		alert("请检查邮箱、用户名、密码是否合法！")
+	}
+
+
 }
 
 function login() {
@@ -77,39 +83,67 @@ function login() {
 
 	//const getCookie = (name) => document.cookie.match(`[;\s+]?${name}=([^;]*)`)?.pop();
 
-	$.ajax({
-		url: url,
-		type: "POST",//方法类型
-		dataType: "html",//预期服务器返回的数据类型
-		data: data,
-		success: function (result) {
-			if(result.trim().toLowerCase() == "true"){
-				//alert(result)
-				alert("登录成功！点击确定进入个人主页...");
-				//这里href跳转到个人主页，获取信息填充，名字，头像
-				// ajax内如何跳转页面，并把数据传过去
-				// "b.html?name="+name+"&age="+age;
-				// window.location.href = "../user/index.html?email=" + "1098668564@qq.com";
+	if (fChkMail(email)) {
+		$.ajax({
+			url: url,
+			type: "POST",//方法类型
+			dataType: "html",//预期服务器返回的数据类型
+			data: data,
+			success: function (result) {
+				if(result.trim().toLowerCase() === "true"){
+					//alert(result)
+					alert("登录成功！点击确定进入个人主页...");
+					//这里href跳转到个人主页，获取信息填充，名字，头像
+					// ajax内如何跳转页面，并把数据传过去
+					// "b.html?name="+name+"&age="+age;
+					// window.location.href = "../user/index.html?email=" + "1098668564@qq.com";
 
-				//document.cookie="email="+email;
-				window.location.href = "../user/index.html?" + btoa(encodeURIComponent("email=" + email));
+					//document.cookie="email="+email;
+					window.location.href = "../user/index.html?" + btoa(encodeURIComponent("email=" + email));
 
-			}
-			else {
-				// 这里要判断用户不存在或者密码错误
-				if (result.trim() == "NOT_EXIST") {
-					alert("用户未注册，请先注册");
-				} else {
-					alert("登录失败！密码错误");
 				}
+				else {
+					// 这里要判断用户不存在或者密码错误
+					if (result.trim() === "NOT_EXIST") {
+						alert("用户未注册，请先注册");
+					} else {
+						alert("登录失败！密码错误");
+					}
 
+				}
+			},
+			error : function() {
+				alert("异常！");
 			}
-		},
-		error : function() {
-			alert("异常！");
-		}
-	});
+		});
+	} else {
+		alert("请检查邮箱是否合法！")
+	}
 
 }
 
+// 校验邮箱
+function fChkMail(email) {
+	var reg = /^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/;
+	return reg.test(email);
+}
 
+// 验证用户名是否含有特殊字符
+function check_other_char(str)
+{
+	if (str === "") {
+		return false;
+	}
+    var arr = ["&", "\\", "/", "*", ">", "<", "@", "!"];
+    for (var i = 0; i < arr.length; i++)
+    {
+        for (var j = 0; j < str.length; j++)
+        {
+            if (arr[i] === str.charAt(j))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
